@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management System</title>
+    <style>
+        body {
+            background-image: url('C:\\Users\\admin\\Desktop\\pbl 1.jpg'); /* Background image path */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: #2C3E50; /* Dark Violet Background Color */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .animated-bg {
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+            background-size: 200% 200%;
+            animation: gradientBG 10s ease infinite;
+            top: -100%;
+            left: -100%;
+            z-index: -1;
+        }
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+        .login-container {
+            text-align: center;
+        }
+        .login-form {
+            display: inline-block;
+            text-align: left;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            background-color: #3498DB;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        .logout-btn {
+            background-color: #E74C3C;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            margin-top: 10px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="animated-bg"></div>
+        <h2>Contact Management System</h2>
+        <div class="login-container">
+            <div class="login-form" id="loginForm">
+                <h3>Login</h3>
+                <form id="login">
+                    <label for="username">Username:</label><br>
+                    <input type="text" id="username" name="username" required><br>
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" required><br><br>
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+            <div class="login-form" id="registerForm" style="display: none;">
+                <h3>Register</h3>
+                <form id="register">
+                    <label for="newUsername">New Username:</label><br>
+                    <input type="text" id="newUsername" name="newUsername" required><br>
+                    <label for="newPassword">New Password:</label><br>
+                    <input type="password" id="newPassword" name="newPassword" required><br><br>
+                    <input type="submit" value="Register">
+                </form>
+            </div>
+        </div>
+        
+        <div id="contactManagement" style="display: none;">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <h3>Add New Contact</h3>
+            <form id="addContact">
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name" required><br>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required><br>
+                <label for="phone">Phone:</label><br>
+                <input type="tel" id="phone" name="phone" required><br>
+                <label for="age">Age:</label><br>
+                <input type="number" id="age" name="age" required><br>
+                <label for="dob">Date of Birth:</label><br>
+                <input type="date" id="dob" name="dob" required><br><br>
+                <input type="submit" value="Add Contact">
+            </form>
+            
+            <h3>Search Contacts</h3>
+            <input type="text" id="searchInput" onkeyup="searchContacts()" placeholder="Search by name, email, or phone number">
+
+            <h3>Contacts</h3>
+            <table id="contactTable">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Age</th>
+                    <th>Date of Birth</th>
+                    <th>Actions</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('contactManagement').style.display = 'none';
+            clearContacts();
+        }
+
+        document.getElementById('login').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // You can implement actual authentication logic here
+            // For simplicity, let's assume username and password are correct
+            // Show contact management form
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('contactManagement').style.display = 'block';
+
+            // Retrieve contacts from localStorage
+            var contacts = JSON.parse(localStorage.getItem(username));
+            if (contacts) {
+                displayContacts(contacts);
+            }
+        });
+
+        document.getElementById('register').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var newUsername = document.getElementById('newUsername').value;
+            var newPassword = document.getElementById('newPassword').value;
+
+            // You can implement actual registration logic here
+            // For simplicity, let's assume registration is successful
+            alert('Registration successful! Please login with your new credentials.');
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        });
+
+        document.getElementById('addContact').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var phone = document.getElementById('phone').value;
+            var age = document.getElementById('age').value;
+            var dob = document.getElementById('dob').value;
+
+            var username = document.getElementById('username').value;
+            var contacts = JSON.parse(localStorage.getItem(username)) || [];
+
+            var contact = { name: name, email: email, phone: phone, age: age, dob: dob };
+            contacts.push(contact);
+
+            localStorage.setItem(username, JSON.stringify(contacts));
+
+            displayContacts(contacts);
+
+            // Clear the form fields after adding the contact
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('dob').value = '';
+        });
+
+        function clearContacts() {
+            var table = document.getElementById('contactTable');
+            var rowCount = table.rows.length;
+
+            // Start from index 1 to leave the header row untouched
+            for (var i = 1; i < rowCount; i++) {
+                table.deleteRow(1);
+            }
+        }
+
+        function displayContacts(contacts) {
+            clearContacts();
+            var table = document.getElementById('contactTable');
+            contacts.forEach(function(contact) {
+                var newRow = table.insertRow(-1);
+                var nameCell = newRow.insertCell(0);
+                var emailCell = newRow.insertCell(1);
+                var phoneCell = newRow.insertCell(2);
+                var ageCell = newRow.insertCell(3);
+                var dobCell = newRow.insertCell(4);
+                var actionCell = newRow.insertCell(5);
+
+                nameCell.innerHTML = contact.name;
+                emailCell.innerHTML = contact.email;
+                phoneCell.innerHTML = contact.phone;
+                ageCell.innerHTML = contact.age;
+                dobCell.innerHTML = contact.dob;
+
+                // Create update and delete buttons
+                var updateButton = document.createElement('button');
+                updateButton.textContent = 'Update';
+                updateButton.onclick = function() {
+                    // Implement update functionality here
+                    // You can use contact and index to identify the contact to update
+                    // For simplicity, let's log a message for now
+                    console.log('Update contact:', contact);
+                };
+
+                var deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = function() {
+                    // Implement delete functionality here
+                    // You can use contact and index to identify the contact to delete
+                    // For simplicity, let's log a message for now
+                    console.log('Delete contact:', contact);
+                };
+
+                actionCell.appendChild(updateButton);
+                actionCell.appendChild(deleteButton);
+            });
+        }
+
+        function searchContacts() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("contactTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td");
+                for (var j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                            break;
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
